@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PEDRODEV BET - Futebol</title>
+  <style>
+    /* Reset básico */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1b2735, #090a0f);
+      color: #cfcfcf;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header preto */
+    header {
+      background: #000;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      box-shadow: 0 2px 6px rgba(0,255,144,0.25);
+    }
+
+    header h1 {
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: #00ff90;
+    }
+
+    header h1 span {
+      color: #fff;
+      font-weight: 900;
+      margin-left: 0.3rem;
+      letter-spacing: 2px;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 1.8rem;
+    }
+
+    nav a {
+      color: #cfcfcf;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #00ff90;
+    }
+
+    /* Main */
+    main {
+      flex-grow: 1;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Seções */
+    section {
+      margin-bottom: 3rem;
+    }
+
+    h2 {
+      color: #00ff90;
+      margin-bottom: 1rem;
+      border-left: 5px solid #00ff90;
+      padding-left: 0.5rem;
+    }
+
+    /* Container das notícias em grid */
+    .noticias-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(280px,1fr));
+      gap: 1.5rem;
+    }
+
+    /* Card notícia */
+    .card {
+      background: #111;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,255,144,0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 20px rgba(0,255,144,0.6);
+    }
+
+    .card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card h3 {
+      margin: 0.8rem 1rem 0.4rem 1rem;
+      font-size: 1.1rem;
+      color: #00ff90;
+    }
+
+    .card p {
+      margin: 0 1rem 1rem 1rem;
+      font-size: 0.9rem;
+      line-height: 1.3;
+      color: #ddd;
+    }
+
+    /* Footer preto */
+    footer {
+      background: #000;
+      padding: 1rem 2rem;
+      text-align: center;
+      color: #fff;
+      font-weight: 600;
+      box-shadow: inset 0 3px 5px rgba(0,0,0,0.3);
+    }
+
+    /* Responsividade */
+    @media (max-width: 600px) {
+      nav ul {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      header {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>PEDRODEV <span>BET</span></h1>
+    <nav>
+      <ul>
+        <li><a href="#home">Início</a></li>
+        <li><a href="#jogos">Jogos ao Vivo</a></li>
+        <li><a href="#noticias">Notícias</a></li>
+        <li><a href="#mercado">Mercado da Bola</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="home">
+      <h2>Bem-vindo ao PEDRODEV BET</h2>
+      <p>Seu site moderno de futebol, com jogos ao vivo e notícias atualizadas.</p>
+    </section>
+
+    <section id="jogos">
+      <h2>Jogos ao Vivo</h2>
+      <div id="jogos-container">
+        <p>Em breve, jogos ao vivo aqui!</p>
+      </div>
+    </section>
+
+    <section id="noticias">
+      <h2>Notícias de Futebol</h2>
+      <div id="noticias-container" class="noticias-grid"></div>
+    </section>
+
+    <section id="mercado">
+      <h2>Mercado da Bola</h2>
+      <p>Atualizações e transferências em tempo real.</p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 PEDRODEV BET - Todos os direitos reservados</p>
+  </footer>
+
+  <script>
+    // Proxy para liberar CORS (só para testes)
+    const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+
+    // Sua chave API da NewsAPI
+    const apiKey = '5e9732f836c74bdab4f9b468fefd868f';
+
+    // URL da API com proxy para evitar bloqueio CORS
+    const url = `${proxyUrl}https://newsapi.org/v2/everything?q=football&language=pt&sortBy=publishedAt&apiKey=${apiKey}`;
+
+    // Busca e exibe notícias
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const container = document.getElementById('noticias-container');
+        container.innerHTML = ''; // Limpa antes de preencher
+
+        data.articles.forEach(article => {
+          const card = document.createElement('div');
+          card.className = 'card';
+
+          const img = document.createElement('img');
+          img.src = article.urlToImage || 'https://via.placeholder.com/300x160?text=Sem+Imagem';
+
+          const titulo = document.createElement('h3');
+          titulo.textContent = article.title;
+
+          const descricao = document.createElement('p');
+          descricao.textContent = article.description || '';
+
+          card.appendChild(img);
+          card.appendChild(titulo);
+          card.appendChild(descricao);
+
+          container.appendChild(card);
+        });
+      })
+      .catch(error => {
+        console.error('Erro ao carregar notícias:', error);
+      });
+  </script>
+</body>
+</html>
